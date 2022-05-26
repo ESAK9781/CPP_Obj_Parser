@@ -1,0 +1,2 @@
+# C++ .obj Loader
+This is a basic attempt at parsing .obj files into usable data structures. This is somewhat new to me, so my focus is more on learning than efficiency. Once I feel I have mastered this, I will likely continue to optimize this solution and explore basic 3D rendering from scratch.
