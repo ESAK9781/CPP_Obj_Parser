@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cmath>
 #include "objloader.hpp"
 using namespace std;
 using namespace d3;
@@ -40,6 +41,7 @@ struct vertex obj::createVertex(float x, float y, float z) {
     out.z = z;
     return out;
 }
+
 union vect obj::createVect(float x, float y, float z) {
     union vect out;
     out.v.x = x;
@@ -47,6 +49,7 @@ union vect obj::createVect(float x, float y, float z) {
     out.v.z = z;
     return out;
 }
+
 struct triface obj::createFace(int v1, int v2, int v3) {
     struct triface out;
     out.verts[0] = v1;
@@ -108,20 +111,110 @@ obj::obj() { // default constructor, returns empty object
 }
 
 obj::~obj() { // free memory
-    // TODO find out if vectors need to be cleared
+    verts.clear();
+    faces.clear();
 }
 
-void addTabs(string s, int tcount) {
+void addTabs(string * s, int tcount) {
     for (int i = 0; i < tcount; i++) {
-        
+        s->append("\t");
     }
 }
-string obj::toJSON() {
-    string out;
-    int tabs = 0;
 
+string obj::toJSON() { // creates a JSON string representing the object
+    string out = "{\n";
 
+    addTabs(&out, 1);
+    out += "\"vertices\" : [\n";
+    union vect curV;
+    for (int i = 0; i < verts.size(); i++){
+        curV = verts[i];
+        addTabs(&out, 2);
+        out += "[" + to_string(curV.v.x) + ", " + to_string(curV.v.y) + ", "
+            + to_string(curV.v.z) + "]";
+        if (i != verts.size() - 1) out += ",";
+        out += "\n";
+    }
+    addTabs(&out, 1);
+    out += "],\n";
 
+    addTabs(&out, 1);
+    out += "\"faces\" : [\n";
+    struct triface curF;
+    for (int i = 0; i < faces.size(); i++){
+        curF = faces[i];
+        addTabs(&out, 2);
+        out += "[" + to_string(curF.verts[0]) + ", " + to_string(curF.verts[1])
+            + ", " + to_string(curF.verts[2]) + "]";
+        if (i != faces.size() - 1) out += ",";
+        out += "\n";
+    }
+    addTabs(&out, 1);
+    out += "]\n";
+
+    out += "}";
+    return out;
+}
+
+void obj::saveAsJSON(string savePath) { // generates a json string using "toJSON" and saves it to the savePath file
+    string jsonSave = toJSON();
+    ofstream saveLoc(savePath);
+    saveLoc << jsonSave;
+    saveLoc.close();
+}
+
+void obj::scale(float sf) { // scales all points in the object about its local origin
+    union vect curV;
+    for (int i = 0; i < verts.size(); i++) {
+        curV = verts[i];
+        curV.a[0] *= sf;
+        curV.a[1] *= sf;
+        curV.a[2] *= sf;
+    }
+}
+
+float d3::vDist(struct vertex a, struct vertex b) {
+    float dx = a.x - b.x;
+    float dy = a.y - b.y;
+    float dz = a.z - b.z;
+
+    return sqrt((dx * dx) + (dy * dy) + (dz * dz));
+}
+
+void obj::scaleTo(float dist) { // scales the object to fit in a spere of radius dist about the origin
+    float maxDist = 0;
+    float curDist;
+    struct vertex origin = createVertex(0, 0, 0);
+    for (int i = 0; i < verts.size(); i++) {
+        curDist = vDist(origin, verts[i].v);
+        maxDist = (curDist > maxDist) ? curDist : maxDist;
+    }
+
+    float sf = dist / maxDist;
+    scale(sf);
+}
+
+void obj::recenter() { // moves the local origin to the object's center of mass
+    union vect com = createVect(0, 0, 0); // the center of mass
+    struct vertex curV;
+
+    float sf = 1.f / (faces.size() * 3); // the weight of each vertex in the total
+    for (int f = 0; f < faces.size(); f++) {
+        for (int v = 0; v < 3; v++) {
+            curV = verts[faces[f].verts[v]].v;
+            com.v.x += curV.x * sf;
+            com.v.y += curV.y * sf;
+            com.v.z += curV.z * sf;
+        }
+    }
+
+    // translate all of the points to center around the center of mass
+
+    for (int i = 0; i < verts.size(); i++) {
+        verts[i].v.x -= com.v.x;
+        verts[i].v.y -= com.v.y;
+        verts[i].v.z -= com.v.z;
+    }
 }
 
 int obj::getToken(string token){ // map token to integer
@@ -133,6 +226,7 @@ int obj::getToken(string token){ // map token to integer
         return ctok;
     }
 }
+
 
 
 

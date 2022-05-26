@@ -21,12 +21,18 @@ namespace d3 {
         int verts[3];
     };
 
+    float vDist(struct vertex a, struct vertex b);
+
     class obj {
         public:
             obj(string path);
             obj();
             ~obj();
             string toJSON();
+            void scale(float f);
+            void scaleTo(float dist);
+            void recenter();
+            void saveAsJSON(string savePath);
             static struct vertex createVertex(float x, float y, float z);
             static union vect createVect(float x, float y, float z);
             static struct triface createFace(int v1, int v2, int v3);
