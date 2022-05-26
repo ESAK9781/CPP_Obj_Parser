@@ -181,7 +181,7 @@ float d3::vDist(struct vertex a, struct vertex b) {
     return sqrt((dx * dx) + (dy * dy) + (dz * dz));
 }
 
-void obj::scaleTo(float dist) { // scales the object to fit in a spere of radius dist about the origin
+void obj::scaleTo(float dist) { // scales the object to fit in a sphere of radius dist about the origin
     float maxDist = 0;
     float curDist;
     struct vertex origin = createVertex(0, 0, 0);
