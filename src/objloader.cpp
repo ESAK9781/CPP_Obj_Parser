@@ -245,6 +245,54 @@ void obj::recenter() { // moves the local origin to the object's center of mass
     }
 }
 
+void obj::rotX(float theta) {
+    float ct = cos(theta);
+    float st = cos(theta);
+
+    struct vertex * curV;
+    
+    for (int i = 0; i < verts.size(); i++){
+        curV = &(verts[i].v);
+        curV->z = curV->z * ct - curV->y * st;
+        curV->y = curV->z * st + curV->y * ct;
+    }
+}
+
+void obj::rotY(float theta) {
+    float ct = cos(theta);
+    float st = cos(theta);
+
+    struct vertex * curV;
+    
+    for (int i = 0; i < verts.size(); i++){
+        curV = &(verts[i].v);
+        curV->x = curV->x * ct - curV->z * st;
+        curV->z = curV->x * st + curV->z * ct;
+    }
+}
+
+void obj::rotZ(float theta) { // same as rotating in 2D; z coordinate stays the same
+    float ct = cos(theta);
+    float st = cos(theta);
+
+    struct vertex * curV;
+    
+    for (int i = 0; i < verts.size(); i++){
+        curV = &(verts[i].v);
+        curV->x = curV->x * ct - curV->y * st;
+        curV->y = curV->x * st + curV->y * ct;
+    }
+}
+
+
+void obj::rotate(float xrot, float yrot, float zrot) {
+    rotX(xrot);
+    rotY(yrot);
+    rotZ(zrot);
+}
+
+
+
 int obj::getToken(string token){ // map token to integer
     if (token.compare("v") == 0){
         return vtok;

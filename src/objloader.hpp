@@ -34,6 +34,10 @@ namespace d3 {
             void saveAsObj(string savePath);
             void scale(float f);
             void scaleTo(float dist);
+            void rotX(float theta);
+            void rotY(float theta);
+            void rotZ(float theta);
+            void rotate(float xrot, float yrot, float zrot);
             void recenter();
             static struct vertex createVertex(float x, float y, float z);
             static union vect createVect(float x, float y, float z);
