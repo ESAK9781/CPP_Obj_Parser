@@ -194,6 +194,34 @@ void obj::scaleTo(float dist) { // scales the object to fit in a sphere of radiu
     scale(sf);
 }
 
+string obj::toObj() {
+    string out;
+    union vect curV;
+    for (int i = 0; i < verts.size(); i++) {
+        curV = verts[i];
+        out += "v " + to_string(curV.v.x) + " " + to_string(curV.v.y) + " " + to_string(curV.v.z) + "\n";
+    }
+
+    out += "\n";
+
+    struct triface curF;
+    for (int i = 0; i < faces.size(); i++) {
+        curF = faces[i];
+        out += "f " + to_string(curF.verts[0] + 1) + " " + to_string(curF.verts[1] + 1)
+            + " " + to_string(curF.verts[2] + 1) + "\n";
+    }
+
+    return out;
+}
+
+void obj::saveAsObj(string savePath) {
+    string objSave = toObj();
+    ofstream saveLoc(savePath);
+    saveLoc << objSave;
+    saveLoc.close();
+}
+
+
 void obj::recenter() { // moves the local origin to the object's center of mass
     union vect com = createVect(0, 0, 0); // the center of mass
     struct vertex curV;

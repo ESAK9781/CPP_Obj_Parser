@@ -16,10 +16,10 @@ int main(void){
 
     cout << "cleaning object" << endl;
     o.recenter();
-    o.scaleTo(4);
+    o.scaleTo(10);
 
-    cout << "serializing to .json" << endl;
-    o.saveAsJSON("res/testobj.json");
+    cout << "serializing to .obj" << endl;
+    o.saveAsObj("res/transformed.obj");
     cout << "exiting" << endl << endl;
     
 
