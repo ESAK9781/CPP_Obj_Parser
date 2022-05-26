@@ -24,7 +24,7 @@ int * splitFaceData(string data, int * outp) { // returns the three values in th
     }
     out[2] = stoi(value);
 
-    cout << "face: " << out[0] << " " << out[1] << " " << out[2] << endl;
+    // cout << "face: " << out[0] << " " << out[1] << " " << out[2] << endl;
 
     for (int i = 0; i < 3; i++){
         *(outp + i) = out[i];
@@ -87,7 +87,7 @@ obj::obj(string path) { // construct from file
             }
             case ftok: {
                 int vs[3];
-                for (int i = 0; i < 1; i++){ // TODO change limit to 3
+                for (int i = 0; i < 3; i++){
                     contents >> data;
                     int split[3];
                     vs[i] = *(splitFaceData(data, &split[0])) - 1; // the -1 makes the vertices zero indexed, rather than 1 indexed
@@ -119,7 +119,7 @@ void addTabs(string s, int tcount) {
 string obj::toJSON() {
     string out;
     int tabs = 0;
-    
+
 
 
 }
