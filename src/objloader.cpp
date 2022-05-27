@@ -22,8 +22,11 @@ int * splitFaceData(string data, int * outp) { // returns the three values in th
         } else {
             value += data[i];
         }
+
+        if (i == data.size() - 1) {
+            out[opos] = stoi(value);
+        }
     }
-    out[2] = stoi(value);
 
     // cout << "face: " << out[0] << " " << out[1] << " " << out[2] << endl;
 
@@ -70,6 +73,7 @@ obj::obj(string path) { // construct from file
     int vertexCount;
     int faceCount;
     while (getline(reader, line)){
+        if (line.compare("") == 0) continue;
         stringstream contents; // to separate the line into words
         contents << line;
         contents >> token;
@@ -164,12 +168,12 @@ void obj::saveAsJSON(string savePath) { // generates a json string using "toJSON
 }
 
 void obj::scale(float sf) { // scales all points in the object about its local origin
-    union vect curV;
+    union vect * curV;
     for (int i = 0; i < verts.size(); i++) {
-        curV = verts[i];
-        curV.a[0] *= sf;
-        curV.a[1] *= sf;
-        curV.a[2] *= sf;
+        curV = &(verts[i]);
+        curV->a[0] *= sf;
+        curV->a[1] *= sf;
+        curV->a[2] *= sf;
     }
 }
 
@@ -247,40 +251,55 @@ void obj::recenter() { // moves the local origin to the object's center of mass
 
 void obj::rotX(float theta) {
     float ct = cos(theta);
-    float st = cos(theta);
+    float st = sin(theta);
 
-    struct vertex * curV;
-    
+    union vect * curV;
+    float curX, curY, curZ;
+
     for (int i = 0; i < verts.size(); i++){
-        curV = &(verts[i].v);
-        curV->z = curV->z * ct - curV->y * st;
-        curV->y = curV->z * st + curV->y * ct;
+        curX = verts[i].v.x;
+        curY = verts[i].v.y;
+        curZ = verts[i].v.z;
+        curV = &(verts[i]);
+        
+        curV->v.y = (curY * ct) - (curZ * st);
+        curV->v.z = (curY * st) + (curZ * ct);
     }
 }
 
 void obj::rotY(float theta) {
     float ct = cos(theta);
-    float st = cos(theta);
+    float st = sin(theta);
 
-    struct vertex * curV;
-    
+    union vect * curV;
+    float curX, curY, curZ;
+
     for (int i = 0; i < verts.size(); i++){
-        curV = &(verts[i].v);
-        curV->x = curV->x * ct - curV->z * st;
-        curV->z = curV->x * st + curV->z * ct;
+        curX = verts[i].v.x;
+        curY = verts[i].v.y;
+        curZ = verts[i].v.z;
+        curV = &(verts[i]);
+        
+        curV->v.x = (curX * ct) + (curZ * st);
+        curV->v.z = -(curX * st) + (curZ * ct);
     }
 }
 
 void obj::rotZ(float theta) { // same as rotating in 2D; z coordinate stays the same
     float ct = cos(theta);
-    float st = cos(theta);
+    float st = sin(theta);
 
-    struct vertex * curV;
-    
+    union vect * curV;
+    float curX, curY, curZ;
+
     for (int i = 0; i < verts.size(); i++){
-        curV = &(verts[i].v);
-        curV->x = curV->x * ct - curV->y * st;
-        curV->y = curV->x * st + curV->y * ct;
+        curX = verts[i].v.x;
+        curY = verts[i].v.y;
+        curZ = verts[i].v.z;
+        curV = &(verts[i]);
+        
+        curV->v.x = (ct * curX) - (st * curY);
+        curV->v.y = (st * curX) + (ct * curY);
     }
 }
 
@@ -291,7 +310,15 @@ void obj::rotate(float xrot, float yrot, float zrot) {
     rotZ(zrot);
 }
 
-
+void obj::translate(float x, float y, float z) {
+    union vect * curV;
+    for (int i = 0; i < verts.size(); i++){
+        curV = &(verts[i]);
+        curV->v.x += x;
+        curV->v.y += y;
+        curV->v.z += z;
+    }
+}
 
 int obj::getToken(string token){ // map token to integer
     if (token.compare("v") == 0){

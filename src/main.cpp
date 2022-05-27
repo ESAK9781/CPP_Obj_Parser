@@ -2,6 +2,8 @@
 #include <string>
 
 #include "objloader.hpp"
+#include "mathConstants.hpp"
+
 using namespace std;
 using namespace d3;
 
@@ -10,18 +12,19 @@ using namespace d3;
 
 
 int main(void){
-    cout << "testing object loader" << endl;
-    obj o("res/testobj.obj");
-    cout << "loading complete" << endl;
+    cout << "loading cube.obj" << endl;
+    obj cube("res/cube.obj");
+    cout << "cube loaded" << endl << endl;
 
-    cout << "cleaning object" << endl;
-    o.recenter();
-    o.scaleTo(10);
+    cout << "transforming cube" << endl;
+    cube.rotate(1, 1, 1);
+    cout << "transformations complete" << endl << endl;
 
-    cout << "serializing to .obj" << endl;
-    o.saveAsObj("res/transformed.obj");
+    cout << "saving cube" << endl;
+    cube.saveAsObj("res/ncube.obj");
+    cout << "cube saved" << endl << endl;
+
     cout << "exiting" << endl << endl;
-    
 
     return 0;
 }

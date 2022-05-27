@@ -28,10 +28,12 @@ namespace d3 {
             obj(string path);
             obj();
             ~obj();
+
             string toJSON();
             void saveAsJSON(string savePath);
             string toObj();
             void saveAsObj(string savePath);
+
             void scale(float f);
             void scaleTo(float dist);
             void rotX(float theta);
@@ -39,6 +41,8 @@ namespace d3 {
             void rotZ(float theta);
             void rotate(float xrot, float yrot, float zrot);
             void recenter();
+            void translate(float x, float y, float z);
+
             static struct vertex createVertex(float x, float y, float z);
             static union vect createVect(float x, float y, float z);
             static struct triface createFace(int v1, int v2, int v3);
