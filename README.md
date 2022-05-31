@@ -1,2 +1,2 @@
 # C++ .obj Loader
-This is a basic attempt at parsing .obj files into usable data structures. This is somewhat new to me, so my focus is more on learning than efficiency. Once I feel I have mastered this, I will likely continue to optimize this solution and explore basic 3D rendering from scratch.
+This is a basic attempt at parsing .obj files into usable data structures. It implements the parsing of obj files into a usable C++ class as well as the re-serialization of this C++ class into an obj or json format. In between these two actions, it can perform any number of translations, dilations, or rotations on the object.
