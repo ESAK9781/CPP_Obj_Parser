@@ -46,9 +46,9 @@ namespace d3 {
             static struct vertex createVertex(float x, float y, float z);
             static union vect createVect(float x, float y, float z);
             static struct triface createFace(int v1, int v2, int v3);
-        private:
             vector<union vect> verts;
             vector<struct triface> faces;
+        private:
             enum objtokens { // for loading .obj files
                 ctok, // line is irrelevant (like "#")
                 vtok, // line is vertex
